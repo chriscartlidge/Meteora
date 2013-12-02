@@ -1,6 +1,5 @@
-package com.furious.meteora.server;
+package com.furious.meteora.servers;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -11,28 +10,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.servlet.ServletContextURIResolver;
+
+import com.furious.meteora.generators.Generator;
+import com.furious.meteora.generators.GeneratorFactory;
+import com.furious.meteora.generators.Generators;
 
 /**
  * Servlet implementation class FopSever
  */
-@WebServlet("/FopSever")
+@WebServlet("/FopServer")
 public class FopServer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private final String TEMPLATE_REQUEST_PARAM = "template";
     private final String CONTENT_REQUEST_PARAM = "content";
+    private final String RENDER_TYPE_REQUEST_PARAM = "render";
     
     private ServletContextURIResolver uriResolver;
 	private TransformerFactory transFactory;
@@ -65,9 +63,17 @@ public class FopServer extends HttpServlet {
         	
         	String template = request.getParameter(TEMPLATE_REQUEST_PARAM);
         	String content = request.getParameter(CONTENT_REQUEST_PARAM);
+        	String render = request.getParameter(RENDER_TYPE_REQUEST_PARAM);
         	
         	Source contentSource = new StreamSource(new StringReader(content.trim()));
         	Source templateSource = convertString2Source(template);
+        	Generators renderType = Generators.valueOf(render);
+        	
+        	Generator generator = GeneratorFactory.newInstance(
+        			uriResolver, transFactory, fopFactory, renderType);
+        	
+        	generator.generate(templateSource, contentSource);
+        	
         
         } catch (Exception ex) {
             throw new ServletException(ex);

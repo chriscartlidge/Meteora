@@ -6,7 +6,6 @@ package com.furious.meteora.generators;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -17,12 +16,11 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.servlet.ServletContextURIResolver;
 
 /**
  * 
- * @author cjcartlidge
+ * @author Christopher Cartlidge
  *
  */
 public abstract class AbstractGenerator implements Generator {
@@ -101,6 +99,5 @@ public abstract class AbstractGenerator implements Generator {
 	private FOUserAgent getFOUserAgent() {
         FOUserAgent userAgent = fopFactory.newFOUserAgent();
         return userAgent;
-    }
-  
+    } 
 }
