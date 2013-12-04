@@ -98,6 +98,7 @@ public abstract class AbstractGenerator implements Generator {
 
 	private FOUserAgent getFOUserAgent() {
         FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        userAgent.setBaseURL(fopFactory.getBaseURL());
         return userAgent;
     } 
 }

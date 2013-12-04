@@ -16,16 +16,37 @@ window.Adgistics.Annotations = function(JQuery, Mustache) {
 
 			var output = tash.to_html(template, tokens);
 
+			var form = {
+				template : 'simple.fo',
+				content: output,
+				render: 'IMAGE'
+			};
 	
 
-			$.post( "http://localhost:8080/meteora/fop", { content: output})
-  .done(function( data ) {
-  	 	var ticks = ((new Date().getTime() * 10000) + 621355968000000000);
+			$.post( "http://localhost:8080/Meteora/FopServer", form).done(function( data ) {
+  				$('#js_preview_image').attr('src', 'http://localhost:8080/Meteora/renders/' + data);
+  			});
+		},
 
-  		$('#js_preview_image').attr('src', $('#js_preview_image').attr('src')+'?'+ticks);
-  });
+		download = function (){
+			var template = $('#js_title_template').html();
 
+			var value = $('#js_title').val();
+			var tokens = {
+				title : value
+			};
 
+			var output = tash.to_html(template, tokens);
+
+			var form = {
+				template : 'simple.fo',
+				content: output,
+				render: 'PDF'
+			};
+
+			$.post( "http://localhost:8080/Meteora/FopServer", form).done(function( data ) {
+  				window.open('http://localhost:8080/Meteora/renders/' + data);
+  			});
 		},
 
 		init = function() {
@@ -40,6 +61,8 @@ window.Adgistics.Annotations = function(JQuery, Mustache) {
 		            generatePreview(_this.val());
 		        }, 500);
 		    });
+
+		    $('#js_download').click(download);
 		};
 
 		return {
